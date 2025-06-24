@@ -8,39 +8,25 @@ from dotenv import load_dotenv
 import boto3
 import json
 from botocore.exceptions import ClientError
-
+import logging
+from secret_key import AwsSecretManager
 
 load_dotenv()
 
-def get_secret():
-    secret_name = "openai-api-key"  # Name of your secret in AWS Secrets Manager
-    region_name = "us-east-1"       # Change to your region
 
-    # Create a Secrets Manager client
-    session = boto3.session.Session()
-    client = session.client(
-        service_name='secretsmanager',
-        region_name=region_name
-    )
+# Load environment variables
+load_dotenv()
 
-    try:
-        get_secret_value_response = client.get_secret_value(
-            SecretId=secret_name
-        )
-    except ClientError as e:
-        raise e
+# Logging config
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-    # Decrypts secret using the associated KMS key.
-    secret = json.loads(get_secret_value_response['SecretString'])
-    return secret['OPENAI_API_KEY']
+# Initialize OpenAI API Key
+openai = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Initialize OpenAI client with secret manager
-try:
-    api_key = get_secret()
-    client = OpenAI(api_key=api_key)
-except Exception as e:
-    st.error(f"Failed to retrieve API key: {str(e)}")
-    st.stop()
+secret_key_obj = AwsSecretManager()
+is_secret = secret_key_obj.get_secrets()
+
+logging.info("Validate is_secret - {is_secret}")
 
 
 

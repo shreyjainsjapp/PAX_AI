@@ -2,7 +2,6 @@ import os
 import json
 import botocore
 import boto3
-from aws_secretsmanager_caching import SecretCache, SecretCacheConfig
 from config import SECRET_NAME, AWS_REGION_NAME
 
 

@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 # Initialize
 load_dotenv()
+
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # Emotion configuration
